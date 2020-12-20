@@ -1,11 +1,11 @@
 package com.gervasioamy.minesweeperapi.controller.dto;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CellRequest {
 
     private int row, col;
