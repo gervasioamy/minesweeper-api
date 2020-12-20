@@ -1,0 +1,18 @@
+version: "3"
+services:
+  api-database:
+    image: mongo:3.2.4
+    container_name: "api-database"
+    ports:
+      - 27017:27017
+    command: --smallfiles
+  api:
+    image: minesweeper-api:latest
+    environment:
+      - MONGODB_HOST=api-database
+      - MONGODB_PORT=27017
+      - MONGODB_DBNAME=minesweeperDB
+    ports:
+      - 8080:8080
+    links:
+      - api-database
