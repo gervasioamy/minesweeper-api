@@ -8,6 +8,8 @@ import com.gervasioamy.minesweeperapi.model.Cell;
 import com.gervasioamy.minesweeperapi.model.Game;
 import com.gervasioamy.minesweeperapi.service.GameService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -27,6 +29,8 @@ public class GameController {
     private GameService gameService;
 
     @Operation(summary = "Create a new game with the given parameters")
+    @ApiResponses(value = { @ApiResponse(responseCode = "400", description = "Invalid input data, i.e., more mines than " +
+            "cells, mines a negative number, player null or empty, rows or cols are less than 3") })
     @PostMapping(value = "/games", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public GameResponse createNewGame(@RequestBody NewGameRequest request) {
@@ -36,6 +40,7 @@ public class GameController {
     }
 
     @Operation(summary = "Retrieve a whole game with details of  the current status")
+    @ApiResponses(value = { @ApiResponse(responseCode = "404", description = "GameID not found") })
     @GetMapping(value = "/games/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public GameResponse getGame(@PathVariable("id") String gameId) {
@@ -45,6 +50,10 @@ public class GameController {
     }
 
     @Operation(summary = "Discover a given cell. It emulates the click on cell while playing")
+    @ApiResponses(value = { @ApiResponse(responseCode = "404", description = "GameID not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid row, col"),
+            @ApiResponse(responseCode = "400", description = "The cell was already discovered"),
+            @ApiResponse(responseCode = "400", description = "Invalid game status (other than CREATED or STARTED")})
     @PostMapping(value = "/games/{id}/discover", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public DiscoverCellResponse discoverCell(@PathVariable("id") String gameId, @RequestBody CellRequest request) {
@@ -54,6 +63,9 @@ public class GameController {
     }
 
     @Operation(summary = "Flag a cell. It ensures this cell can't be discovered (by mistake maybe?)")
+    @ApiResponses(value = { @ApiResponse(responseCode = "404", description = "GameID not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid row, col"),
+            @ApiResponse(responseCode = "400", description = "Invalid game status (other than CREATED or STARTED")})
     @PostMapping(value = "/games/{id}/flag", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public GameResponse flagCell(@PathVariable("id") String gameId, @RequestBody CellRequest request) {
@@ -62,6 +74,9 @@ public class GameController {
     }
 
     @Operation(summary = "Unflag a cell. It left the given cell ready to be discovered")
+    @ApiResponses(value = { @ApiResponse(responseCode = "404", description = "GameID not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid row, col"),
+            @ApiResponse(responseCode = "400", description = "Invalid game status (other than CREATED or STARTED")})
     @DeleteMapping(value = "/games/{id}/flag", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public GameResponse unflagCell(@PathVariable("id") String gameId, @RequestBody CellRequest request) {
