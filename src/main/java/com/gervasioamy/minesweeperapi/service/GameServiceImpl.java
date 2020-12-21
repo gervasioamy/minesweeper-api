@@ -49,8 +49,23 @@ public class GameServiceImpl implements GameService {
         return result;
     }
 
+    @Override
+    public void pause(String gameId) {
+        Game game = getGame(gameId);
+        game.pause();
+        gameRepository.save(game);
+    }
+
+    @Override
+    public void resume(String gameId) {
+        Game game = getGame(gameId);
+        game.resume();
+        gameRepository.save(game);
+    }
+
     public Game getGame(String gameId) {
         return gameRepository.findById(gameId).orElseThrow(() -> new GameNotFoundException(gameId));
     }
+
 
 }

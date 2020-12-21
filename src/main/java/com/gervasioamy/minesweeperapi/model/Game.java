@@ -40,6 +40,8 @@ public class Game {
 
     private int cellsDiscovered;
 
+    private long millisecondsElapsed;
+
     /**
      * Creates a new game with the given values (if they are valid) by assigning the mines randomly
      * @param player who's playing?
@@ -59,6 +61,7 @@ public class Game {
         this.status = GameStatus.CREATED;
         this.flaggedMines = 0;
         this.flaggedNonMInes = 0;
+        this.millisecondsElapsed = 0;
         this.initGame();
     }
 
@@ -267,6 +270,31 @@ public class Game {
             return true;
         }
     }
+
+    /**
+     * Set the game status in {@link GameStatus#PAUSED}, add count the milliseconds elapsed until now
+     */
+    public void pause() {
+        if (GameStatus.STARTED != status) {
+            throw new GameStatusException(status);
+        }
+        this.status = GameStatus.PAUSED;
+        long diffInMilliseconds = new Date().getTime() - this.startedTimestamp.getTime();
+        this.millisecondsElapsed += diffInMilliseconds;
+        this.startedTimestamp = null;
+    }
+
+    /**
+     * Set the game status in {@link GameStatus#STARTED}, add assign a timestamp (now) as started datetime
+     */
+    public void resume() {
+        if (GameStatus.PAUSED != status) {
+            throw new GameStatusException(status);
+        }
+        this.status = GameStatus.STARTED;
+        this.startedTimestamp = new Date();
+    }
+
 
 
     // utility for debugging propose

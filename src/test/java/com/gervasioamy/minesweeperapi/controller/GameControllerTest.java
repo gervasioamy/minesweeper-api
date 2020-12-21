@@ -6,6 +6,7 @@ import com.gervasioamy.minesweeperapi.controller.dto.NewGameRequest;
 import com.gervasioamy.minesweeperapi.exception.CellAlreadyDiscoveredException;
 import com.gervasioamy.minesweeperapi.exception.GameInitException;
 import com.gervasioamy.minesweeperapi.exception.GameNotFoundException;
+import com.gervasioamy.minesweeperapi.exception.GameStatusException;
 import com.gervasioamy.minesweeperapi.model.Game;
 import com.gervasioamy.minesweeperapi.model.GameStatus;
 import com.gervasioamy.minesweeperapi.service.GameService;
@@ -122,5 +123,34 @@ public class GameControllerTest {
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void givenAValidStartedGameWhenPauseShouldReturn204() throws Exception {
+        String gameId = "123";
+        mockMvc.perform(post("/api/games/{gameId}/pause", gameId)
+                .contentType("application/json"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void givenAValidPausedGameWhenPauseShouldReturn400() throws Exception {
+        String gameId = "123";
+        doThrow(new GameStatusException(GameStatus.PAUSED)).when(gameServiceMock).pause(eq(gameId));
+        mockMvc.perform(post("/api/games/{gameId}/pause", gameId)
+                .contentType("application/json"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void givenAValidPausedGameWhenResumeShouldReturn200() throws Exception {
+        String gameId = "123";
+        Game mockedGame = mock(Game.class);
+        when(mockedGame.getPlayer()).thenReturn("player1");
+        when(mockedGame.getStatus()).thenReturn(GameStatus.PAUSED);
+        when(gameServiceMock.getGame(eq(gameId))).thenReturn(mockedGame);
+        mockMvc.perform(delete("/api/games/{gameId}/pause", gameId)
+                .contentType("application/json"))
+                .andExpect(status().isOk());
     }
 }

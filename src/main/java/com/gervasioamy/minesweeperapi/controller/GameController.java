@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -81,6 +82,25 @@ public class GameController {
     @ResponseBody
     public GameResponse unflagCell(@PathVariable("id") String gameId, @RequestBody CellRequest request) {
         gameService.unflagCell(gameId, request.getRow(), request.getCol());
+        return this.getGame(gameId);
+    }
+
+    @Operation(summary = "Pause a game.")
+    @ApiResponses(value = { @ApiResponse(responseCode = "404", description = "GameID not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid game status (other than STARTED")})
+    @PostMapping(value = "/games/{id}/pause")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void pause(@PathVariable("id") String gameId) {
+        gameService.pause(gameId);
+    }
+
+    @Operation(summary = "Resume a paused a game.")
+    @ApiResponses(value = { @ApiResponse(responseCode = "404", description = "GameID not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid game status (other than PAUSED")})
+    @DeleteMapping(value = "/games/{id}/pause", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public GameResponse resume(@PathVariable("id") String gameId) {
+        gameService.resume(gameId);
         return this.getGame(gameId);
     }
 }

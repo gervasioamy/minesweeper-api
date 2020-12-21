@@ -156,4 +156,18 @@ public class GameTest {
         assertEquals(GameStatus.STARTED , game.getStatus());
         assertNull(game.getEndedTimestamp());
     }
+
+    @Test
+    public void givenARandomGameWhenPauseThenStatusShouldChange() {
+        // trick for getting it started
+        game.startPlaying();
+        try {
+            Thread.sleep(2);
+        } catch (InterruptedException e) {
+        }
+        game.pause();
+        assertEquals(GameStatus.PAUSED , game.getStatus());
+        assertNull(game.getStartedTimestamp());
+        assertTrue(game.getMillisecondsElapsed() > 0);
+    }
 }

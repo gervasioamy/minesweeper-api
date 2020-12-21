@@ -28,6 +28,8 @@ public class GameResponse {
 
     private String status;
 
+    private long millisecondsElapsed;
+
     /**
      * Creates a {@link GameResponse} from a {@link Game} instance
      * @param newGame
@@ -49,6 +51,7 @@ public class GameResponse {
         this.status = newGame.getStatus().toString();
         this.startedTimestamp = newGame.getStartedTimestamp();
         this.endedTimestamp = newGame.getEndedTimestamp();
+        this.millisecondsElapsed = newGame.getMillisecondsElapsed();
     }
 
 }
