@@ -26,6 +26,7 @@ public class GameController {
     @Autowired
     private GameService gameService;
 
+    @Operation(summary = "Create a new game with the given parameters")
     @PostMapping(value = "/games", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public GameResponse createNewGame(@RequestBody NewGameRequest request) {
@@ -34,6 +35,7 @@ public class GameController {
         return new GameResponse(newGame);
     }
 
+    @Operation(summary = "Retrieve a whole game with details of  the current status")
     @GetMapping(value = "/games/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public GameResponse getGame(@PathVariable("id") String gameId) {
@@ -42,6 +44,7 @@ public class GameController {
         return new GameResponse(theGame);
     }
 
+    @Operation(summary = "Discover a given cell. It emulates the click on cell while playing")
     @PostMapping(value = "/games/{id}/discover", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public DiscoverCellResponse discoverCell(@PathVariable("id") String gameId, @RequestBody CellRequest request) {
@@ -50,6 +53,7 @@ public class GameController {
         return response;
     }
 
+    @Operation(summary = "Flag a cell. It ensures this cell can't be discovered (by mistake maybe?)")
     @PostMapping(value = "/games/{id}/flag", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public GameResponse flagCell(@PathVariable("id") String gameId, @RequestBody CellRequest request) {
@@ -57,6 +61,7 @@ public class GameController {
         return this.getGame(gameId);
     }
 
+    @Operation(summary = "Unflag a cell. It left the given cell ready to be discovered")
     @DeleteMapping(value = "/games/{id}/flag", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public GameResponse unflagCell(@PathVariable("id") String gameId, @RequestBody CellRequest request) {

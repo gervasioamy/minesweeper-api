@@ -20,3 +20,5 @@ _Please go to [Docker docs](https://www.docker.com/get-started) if needed to ins
 docker-compose up
 ```
 
+## API Documentation
+You can find API endpoints documented in `{host}:{port}/api-docs.html`, where `host` and `port` values are related to where this app is running, in the case of runing it locally, try `http://localhost:8080/api-docs.html` 
