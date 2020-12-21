@@ -7,12 +7,12 @@ import lombok.*;
 @Getter
 public class CellResponse {
 
-    private int row, col; // coordinates
+    private Integer row, col; // coordinates
 
-    private boolean discovered; // true if this cell was discovered by the player
+    private Boolean discovered; // true if this cell was discovered by the player
 
-    private int value; // how many adjacent mines this cell has?
+    private Integer value; // how many adjacent mines this cell has?
 
-    private boolean flagged; // true if this cell was flagged by the player
+    private Boolean flagged; // true if this cell was flagged by the player
 
 }

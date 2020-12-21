@@ -41,12 +41,14 @@ public class GameResponse {
         this.cols = newGame.getCols();
         this.mines = newGame.getMines();
         this.cells = newGame.getCells().stream().map(row ->
-            row.stream().map(cell -> CellResponse.builder().
-                    row(cell.getRow()).
-                    col(cell.getCol()).
-                    discovered(cell.isDiscovered()).
-                    flagged(cell.isFlagged()).
-                    build()).collect(Collectors.toList())
+            row.stream().filter(cell -> cell.isDiscovered() || cell.isFlagged())
+                .map(cell -> CellResponse.builder().
+                        row(cell.getRow()).
+                        col(cell.getCol()).
+                        value(cell.isDiscovered()?cell.getValue():null).
+                        discovered(cell.isDiscovered()).
+                        flagged(cell.isFlagged()).
+                        build()).collect(Collectors.toList())
         ).collect(Collectors.toList());
         this.status = newGame.getStatus().toString();
         this.startedTimestamp = newGame.getStartedTimestamp();
