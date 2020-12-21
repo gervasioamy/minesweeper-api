@@ -1,7 +1,10 @@
 package com.gervasioamy.minesweeperapi.service;
 
 import com.gervasioamy.minesweeperapi.exception.CellAlreadyDiscoveredException;
+import com.gervasioamy.minesweeperapi.model.Cell;
 import com.gervasioamy.minesweeperapi.model.Game;
+
+import java.util.List;
 
 public interface GameService {
 
@@ -34,7 +37,7 @@ public interface GameService {
      * @throws java.util.NoSuchElementException if the cell was not found (wrong row, col coordenates)
      * @throws CellAlreadyDiscoveredException if the cell was already discovered
      */
-    boolean discoverCell(String gameId, int row, int col);
+    List<Cell> discoverCell(String gameId, int row, int col);
 
     /**
      * Flags a cell in the game. It blocks the cell to be discovered.

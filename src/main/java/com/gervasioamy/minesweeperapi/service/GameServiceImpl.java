@@ -1,10 +1,13 @@
 package com.gervasioamy.minesweeperapi.service;
 
 import com.gervasioamy.minesweeperapi.exception.GameNotFoundException;
+import com.gervasioamy.minesweeperapi.model.Cell;
 import com.gervasioamy.minesweeperapi.model.Game;
 import com.gervasioamy.minesweeperapi.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Service layer.
@@ -23,9 +26,9 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public boolean discoverCell(String gameId, int row, int col) {
+    public List<Cell> discoverCell(String gameId, int row, int col) {
         Game game = getGame(gameId);
-        boolean result = game.discoverCell(row, col);
+        List<Cell> result = game.discoverCell(row, col);
         gameRepository.save(game);
         return result;
     }

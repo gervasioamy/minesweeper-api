@@ -91,7 +91,6 @@ public class GameControllerTest {
         when(mockedGame.getPlayer()).thenReturn("player1");
         when(mockedGame.getStatus()).thenReturn(GameStatus.STARTED);
         CellRequest request = new CellRequest(row, col);
-        when(gameServiceMock.discoverCell(eq(gameId), eq(row), eq(col))).thenReturn(false);
         when(gameServiceMock.getGame(eq(gameId))).thenReturn(mockedGame);
         mockMvc.perform(post("/api/games/{gameId}/discover", gameId)
                 .contentType("application/json")

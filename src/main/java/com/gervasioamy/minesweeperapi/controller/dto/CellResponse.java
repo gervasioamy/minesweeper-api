@@ -7,9 +7,7 @@ import lombok.*;
 @Getter
 public class CellResponse {
 
-    private int x, y; // coordenates
-
-    private boolean mine; // is this cell a mine?
+    private int row, col; // coordinates
 
     private boolean discovered; // true if this cell was discovered by the player
 

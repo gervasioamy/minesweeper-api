@@ -20,7 +20,6 @@ public class GameTest {
     @BeforeEach
     public  void setup() {
         this.game = new Game("JohnDoe", 10, 8,8);
-        this.game.startPlaying();
     }
 
     @Test
@@ -73,9 +72,10 @@ public class GameTest {
         }
         log.debug("Testing discoverCell in game:\n{}", game);
         log.debug(">> secureCell: ({}, {})", secureCell.getRow(), secureCell.getCol());
-        boolean result = game.discoverCell(secureCell.getRow(), secureCell.getCol());
+        List<Cell> result = game.discoverCell(secureCell.getRow(), secureCell.getCol());
         log.debug("Game with cell discovered:\n{}", game);
         assertTrue(game.getCell(secureCell.getRow(), secureCell.getCol()).get().isDiscovered());
+        assertTrue(result.size() > 0);
     }
 
     @Test
@@ -113,8 +113,8 @@ public class GameTest {
                 unsecureCell = cell;
             }
         }
-        boolean result = game.discoverCell(unsecureCell.getRow(), unsecureCell.getCol());
-        assertTrue(result);
+        List<Cell> result = game.discoverCell(unsecureCell.getRow(), unsecureCell.getCol());
+        assertEquals(1, result.size());
         assertEquals(GameStatus.GAME_OVER , game.getStatus());
         assertNotNull(game.getEndedTimestamp());
     }

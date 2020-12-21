@@ -52,4 +52,13 @@ public class MainExceptionHandler {
         return response;
     }
 
+    @ExceptionHandler(value = GameStatusException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Map<String, String> handleGameStatusException(GameStatusException e) {
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", "The game current status doesn't allow the operation");
+        return response;
+    }
+
 }

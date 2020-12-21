@@ -2,6 +2,7 @@ package com.gervasioamy.minesweeperapi.model;
 
 import com.gervasioamy.minesweeperapi.exception.CellAlreadyDiscoveredException;
 import com.gervasioamy.minesweeperapi.exception.GameInitException;
+import com.gervasioamy.minesweeperapi.exception.GameStatusException;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -39,6 +40,15 @@ public class Game {
 
     private int cellsDiscovered;
 
+    /**
+     * Creates a new game with the given values (if they are valid) by assigning the mines randomly
+     * @param player who's playing?
+     * @param mines numbers of mines in the game
+     * @param rows number of rows
+     * @param cols number of columns
+     * @throws GameInitException if player is null or empty, rows or cols are less than 3, mines less than 1 or more
+     * than rows * cols
+     */
     public Game(String player, int mines, int rows, int cols) {
         this.validateInit(player, mines, rows, cols);
         this.id = UUID.randomUUID().toString();
@@ -52,17 +62,17 @@ public class Game {
         this.initGame();
     }
 
-    protected void validateInit(String player, int mines, int height, int width) {
+    protected void validateInit(String player, int mines, int rows, int cols) {
         if (player == null || "".equals(player)) {
             throw new GameInitException("Invalid player name");
         }
-        if (height < 3 || width < 3) {
+        if (rows < 3 || cols < 3) {
             throw new GameInitException("Invalid height or width. Minimum allowed size is 3x3 ");
         }
         if (mines < 1) {
             throw new GameInitException("There should be at least 1 mine in the game");
         }
-        if (mines > (height * width) ) {
+        if (mines > (rows * cols) ) {
             throw new GameInitException("Too much mines in the game");
         }
     }
@@ -149,38 +159,53 @@ public class Game {
     /**
      * Discover the selected cell and verifies it's not a mine. If the cell value is 0 (no adjacent mines) then it
      * clears recurrently the adjacent cells. It a mind is found, GAME OVER
-     * @param x
-     * @param y
-     * @return true if the game ended (check status to verify if the player won)
+     * @param row
+     * @param col
+     * @return all the discovered cells
+     * @throws GameStatusException if the game is in other status than {@link GameStatus#CREATED} or {@link GameStatus#STARTED}
+     * @throws CellAlreadyDiscoveredException if the cell was already discovered
      */
-    public boolean discoverCell(int x, int y) {
-        startPlaying(); // will only take effect the first time a cell is discovered to let the game get started
-        Cell cell = this.getCell(x, y).orElseThrow();
+    public List<Cell> discoverCell(int row, int col) {
+        if (GameStatus.CREATED != status && GameStatus.STARTED != status) {
+            throw new GameStatusException(status);
+        }
+        Cell cell = this.getCell(row, col).orElseThrow();
         if (cell.isDiscovered()) {
-            throw new CellAlreadyDiscoveredException(x, y);
+            throw new CellAlreadyDiscoveredException(row, col);
+        }
+        List<Cell> discovered = new ArrayList<>();
+        this.discoverCell(row, col, discovered);
+        return discovered;
+    }
+
+
+    protected void discoverCell(int row, int col, List<Cell> discoveredCells) {
+        startPlaying(); // will only take effect the first time a cell is discovered to let the game get started
+        Cell cell = this.getCell(row, col).orElseThrow();
+        if (cell.isDiscovered()) {
+            return; // nothing to do, this cell was already discovered
         }
         cell.setDiscovered(true);
+        discoveredCells.add(cell);
         cellsDiscovered++;
         if (cell.isMine()) {
             this.gameOver();
-            return true;
+            return;
         } else if (cell.getValue() == 0) {
-            this.discoverAdjacentCells(x, y);
+            this.discoverAdjacentCells(row, col, discoveredCells);
         }
         // if all non-mines cells was discovered, then the player wins!
         if (cellsDiscovered == rows * cols - mines) {
             // all non-mine cells was discovered, the player wins
             this.win();
-            return true;
-        } else
-            return false;
+        }
     }
 
-    private void discoverAdjacentCells(int x, int y) {
-        Cell cell = cells.get(x).get(y);
-        getAdjacents(x, y).stream().forEach(c -> {
+    private void discoverAdjacentCells(int row, int col, List<Cell> discoveredCells) {
+        Cell cell = cells.get(row).get(col);
+        getAdjacents(row, col).stream().forEach(c -> {
             if (!c.isDiscovered() && !c.isMine())
-                discoverCell(c.getRow(), c.getCol());
+                discoverCell(c.getRow(), c.getCol(), discoveredCells);
         });
 
     }
@@ -202,6 +227,9 @@ public class Game {
      * @return true if the cell was flagged ok, false if the cell was already discovered or flagged (not able to be flagged)
      */
     public boolean flagCell(int row, int col) {
+        if (GameStatus.CREATED != status && GameStatus.STARTED != status) {
+            throw new GameStatusException(status);
+        }
         Cell cell = getCell(row, col).get();
         if (cell.isDiscovered() || cell.isFlagged()) {
             return false;
@@ -223,6 +251,9 @@ public class Game {
      * @return true if the cell was unflagged ok, false if the cell was already discovered or not yet flagged
      */
     public boolean unflagCell(int row, int col) {
+        if (GameStatus.CREATED != status && GameStatus.STARTED != status) {
+            throw new GameStatusException(status);
+        }
         Cell cell = getCell(row, col).get();
         if (cell.isDiscovered() || !cell.isFlagged()) {
             return false;

@@ -40,9 +40,8 @@ public class GameResponse {
         this.mines = newGame.getMines();
         this.cells = newGame.getCells().stream().map(row ->
             row.stream().map(cell -> CellResponse.builder().
-                    x(cell.getRow()).
-                    y(cell.getCol()).
-                    mine(cell.isMine()).
+                    row(cell.getRow()).
+                    col(cell.getCol()).
                     discovered(cell.isDiscovered()).
                     flagged(cell.isFlagged()).
                     build()).collect(Collectors.toList())
@@ -51,6 +50,5 @@ public class GameResponse {
         this.startedTimestamp = newGame.getStartedTimestamp();
         this.endedTimestamp = newGame.getEndedTimestamp();
     }
-
 
 }

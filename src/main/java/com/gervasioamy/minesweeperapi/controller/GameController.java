@@ -1,14 +1,19 @@
 package com.gervasioamy.minesweeperapi.controller;
 
 import com.gervasioamy.minesweeperapi.controller.dto.CellRequest;
+import com.gervasioamy.minesweeperapi.controller.dto.DiscoverCellResponse;
 import com.gervasioamy.minesweeperapi.controller.dto.GameResponse;
 import com.gervasioamy.minesweeperapi.controller.dto.NewGameRequest;
+import com.gervasioamy.minesweeperapi.model.Cell;
 import com.gervasioamy.minesweeperapi.model.Game;
 import com.gervasioamy.minesweeperapi.service.GameService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * REST Controller layer. It basically implements the RESTFul API
@@ -39,9 +44,10 @@ public class GameController {
 
     @PostMapping(value = "/games/{id}/discover", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public GameResponse discoverCell(@PathVariable("id") String gameId, @RequestBody CellRequest request) {
-        gameService.discoverCell(gameId, request.getRow(), request.getCol());
-        return this.getGame(gameId);
+    public DiscoverCellResponse discoverCell(@PathVariable("id") String gameId, @RequestBody CellRequest request) {
+        List<Cell> discovered = gameService.discoverCell(gameId, request.getRow(), request.getCol());
+        DiscoverCellResponse response = new DiscoverCellResponse(gameService.getGame(gameId).getStatus(), discovered);
+        return response;
     }
 
     @PostMapping(value = "/games/{id}/flag", produces = MediaType.APPLICATION_JSON_VALUE)
