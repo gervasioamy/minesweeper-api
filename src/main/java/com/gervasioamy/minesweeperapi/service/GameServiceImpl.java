@@ -34,19 +34,18 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public boolean flagCell(String gameId, int row, int col) {
+    public void flagCell(String gameId, int row, int col) {
         Game game = getGame(gameId);
-        boolean result = game.flagCell(row, col);
+        game.flagCell(row, col);
         gameRepository.save(game);
-        return result;
+
     }
 
     @Override
-    public boolean unflagCell(String gameId, int row, int col) {
+    public void unflagCell(String gameId, int row, int col) {
         Game game = getGame(gameId);
-        boolean result = game.unflagCell(row, col);
+        game.unflagCell(row, col);
         gameRepository.save(game);
-        return result;
     }
 
     @Override

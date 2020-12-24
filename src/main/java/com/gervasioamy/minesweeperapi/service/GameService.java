@@ -45,10 +45,10 @@ public interface GameService {
      * @param gameId the game id being playing
      * @param row row
      * @param col column
-     * @return true if the cell was flagged ok, false if the cell was already discovered or flagged (not able to be flagged)
      * @throws java.util.NoSuchElementException if the cell was not found (wrong row, col coordenates)
+     * @throws com.gervasioamy.minesweeperapi.exception.CellNotFlaggableException if the cell was already discovered or flagged
      */
-    boolean flagCell(String gameId, int row, int col);
+    void flagCell(String gameId, int row, int col);
 
     /**
      * Undo a flag in the game, so the cell is now able to be discovered.
@@ -56,13 +56,21 @@ public interface GameService {
      * @param gameId the game id being playing
      * @param row row
      * @param col column
-     * @return true if the cell was unflagged ok, false if the cell was already discovered or not yet flagged
+     * @throws com.gervasioamy.minesweeperapi.exception.CellNotUnflaggableException if the cell was already discovered or not yet flagged
      * @throws java.util.NoSuchElementException if the cell was not found (wrong row, col coordenates)
      */
-    boolean unflagCell(String gameId, int row, int col);
+    void unflagCell(String gameId, int row, int col);
 
+    /**
+     * Pause a game. It set the game status to PAUSED and the game doesn't allow discover or flag cells
+     * @param gameId the game id to be paused
+     */
     void pause(String gameId);
 
+    /**
+     * Resume a game. It set the game status to PAUSED and the game doesn't allow discover or flag cells
+     * @param gameId the game id to be paused
+     */
     void resume(String gameId);
 
 }

@@ -61,4 +61,22 @@ public class MainExceptionHandler {
         return response;
     }
 
+    @ExceptionHandler(value = CellNotFlaggableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Map<String, String> handleCellNotFlaggableException(CellNotFlaggableException e) {
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", "The cell is not able to be flagged, it's discovered or already flagged");
+        return response;
+    }
+
+    @ExceptionHandler(value = CellNotUnflaggableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Map<String, String> handleCellNotUnflaggableException(CellNotUnflaggableException e) {
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", "The cell is not able to be unflagged, it's discovered or not yet flagged");
+        return response;
+    }
+
 }

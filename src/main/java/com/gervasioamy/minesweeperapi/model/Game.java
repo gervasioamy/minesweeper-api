@@ -1,8 +1,6 @@
 package com.gervasioamy.minesweeperapi.model;
 
-import com.gervasioamy.minesweeperapi.exception.CellAlreadyDiscoveredException;
-import com.gervasioamy.minesweeperapi.exception.GameInitException;
-import com.gervasioamy.minesweeperapi.exception.GameStatusException;
+import com.gervasioamy.minesweeperapi.exception.*;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -227,15 +225,16 @@ public class Game {
      * Flag the cell, i.e. the player identify this cell as a mine
      * @param row
      * @param col
-     * @return true if the cell was flagged ok, false if the cell was already discovered or flagged (not able to be flagged)
+     * @throws CellNotFlaggableException if the cell was already discovered or flagged (not able to be flagged)
+     * @throws GameStatusException if the game is not CREATED or STARTED
      */
-    public boolean flagCell(int row, int col) {
+    public void flagCell(int row, int col) {
         if (GameStatus.CREATED != status && GameStatus.STARTED != status) {
             throw new GameStatusException(status);
         }
         Cell cell = getCell(row, col).get();
         if (cell.isDiscovered() || cell.isFlagged()) {
-            return false;
+            throw new CellNotFlaggableException(row, col);
         } else {
             cell.setFlagged(true);
             if (cell.isMine()) {
@@ -243,7 +242,6 @@ public class Game {
             } else {
                 flaggedNonMInes++;
             }
-            return true;
         }
     }
 
@@ -251,15 +249,16 @@ public class Game {
      * Undo the flag on the cell, i.e. the player identify this cell as a mine
      * @param row
      * @param col
-     * @return true if the cell was unflagged ok, false if the cell was already discovered or not yet flagged
+     * @return CellNotUnflaggableException if the cell was already discovered or not yet flagged
+     * @throws GameStatusException if the game is not CREATED or STARTED
      */
-    public boolean unflagCell(int row, int col) {
+    public void unflagCell(int row, int col) {
         if (GameStatus.CREATED != status && GameStatus.STARTED != status) {
             throw new GameStatusException(status);
         }
         Cell cell = getCell(row, col).get();
         if (cell.isDiscovered() || !cell.isFlagged()) {
-            return false;
+            throw new CellNotUnflaggableException(row, col);
         } else {
             cell.setFlagged(false);
             if (cell.isMine()) {
@@ -267,7 +266,6 @@ public class Game {
             } else {
                 flaggedNonMInes--;
             }
-            return true;
         }
     }
 
