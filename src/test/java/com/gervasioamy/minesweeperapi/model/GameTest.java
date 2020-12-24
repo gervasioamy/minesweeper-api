@@ -3,6 +3,7 @@ package com.gervasioamy.minesweeperapi.model;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.gervasioamy.minesweeperapi.exception.CellAlreadyDiscoveredException;
+import com.gervasioamy.minesweeperapi.exception.GameStatusException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -169,5 +170,22 @@ public class GameTest {
         assertEquals(GameStatus.PAUSED , game.getStatus());
         assertNull(game.getStartedTimestamp());
         assertTrue(game.getMillisecondsElapsed() > 0);
+    }
+
+    @Test
+    public void givenAPausedGameWhenPauseThenShouldThrowException() {
+        // trick for getting it started
+        game.startPlaying();
+        game.pause();
+        // now game it's PAUSED
+        assertThrows(GameStatusException.class, () -> game.pause());
+    }
+
+    @Test
+    public void givenANotPausedGameWhenResumeThenShouldThrowException() {
+        // trick for getting it started
+        game.startPlaying();
+        // now game it's PAUSED
+        assertThrows(GameStatusException.class, () -> game.resume());
     }
 }
