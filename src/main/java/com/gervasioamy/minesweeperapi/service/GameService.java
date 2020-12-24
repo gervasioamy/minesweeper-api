@@ -61,4 +61,8 @@ public interface GameService {
      */
     boolean unflagCell(String gameId, int row, int col);
 
+    void pause(String gameId);
+
+    void resume(String gameId);
+
 }
