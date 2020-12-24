@@ -49,7 +49,7 @@ public class GameControllerTest {
         mockMvc.perform(post("/api/games/")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
