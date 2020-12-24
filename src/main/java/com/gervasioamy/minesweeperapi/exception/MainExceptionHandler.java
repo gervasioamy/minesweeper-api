@@ -20,63 +20,71 @@ public class MainExceptionHandler {
     @ExceptionHandler(value = GameNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public Map<String, String> handleGameNotFound(GameNotFoundException e) {
-        HashMap<String, String> response = new HashMap<>();
-        response.put("message", "Game ID: " + e.getGameId() + " was not found");
-        return response;
+    public ErrorResponse handleGameNotFound(GameNotFoundException e) {
+        return ErrorResponse.builder().
+                message("Game ID: " + e.getGameId() + " was not found").
+                errorCode(e.getErrorCode()).
+                build();
     }
 
     @ExceptionHandler(value = GameInitException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public Map<String, String> handleGameInitFailure(GameInitException e) {
-        HashMap<String, String> response = new HashMap<>();
-        response.put("message", e.getMessage());
-        return response;
+    public ErrorResponse handleGameInitFailure(GameInitException e) {
+        return ErrorResponse.builder().
+                message(e.getMessage()).
+                errorCode(e.getErrorCode()).
+                build();
     }
+
     @ExceptionHandler(value = NoSuchElementException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public Map<String, String> handleNoSuchElementException(NoSuchElementException e) {
-        HashMap<String, String> response = new HashMap<>();
-        response.put("message", "Wrong cell coordinates");
-        return response;
+    public ErrorResponse handleNoSuchElementException(NoSuchElementException e) {
+        return ErrorResponse.builder().
+                message("Wrong cell coordinates").
+                errorCode(ErrorCodes.ERROR_1006_INVALID_CELL).
+                build();
     }
 
     @ExceptionHandler(value = CellAlreadyDiscoveredException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public Map<String, String> handleCellAlreadyDiscoveredException(CellAlreadyDiscoveredException e) {
-        HashMap<String, String> response = new HashMap<>();
-        response.put("message", "Cell (" + e.getRow() + ", " + e.getCol() + ") is already discovered");
-        return response;
+    public ErrorResponse handleCellAlreadyDiscoveredException(CellAlreadyDiscoveredException e) {
+        return ErrorResponse.builder().
+                message("Cell (" + e.getRow() + ", " + e.getCol() + ") is already discovered").
+                errorCode(e.getErrorCode()).
+                build();
     }
 
     @ExceptionHandler(value = GameStatusException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public Map<String, String> handleGameStatusException(GameStatusException e) {
-        HashMap<String, String> response = new HashMap<>();
-        response.put("message", "The game current status doesn't allow the operation");
-        return response;
+    public ErrorResponse handleGameStatusException(GameStatusException e) {
+        return ErrorResponse.builder().
+                message("The game current status doesn't allow the operation").
+                errorCode(e.getErrorCode()).
+                build();
     }
 
     @ExceptionHandler(value = CellNotFlaggableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public Map<String, String> handleCellNotFlaggableException(CellNotFlaggableException e) {
-        HashMap<String, String> response = new HashMap<>();
-        response.put("message", "The cell is not able to be flagged, it's discovered or already flagged");
-        return response;
+    public ErrorResponse handleCellNotFlaggableException(CellNotFlaggableException e) {
+        return ErrorResponse.builder().
+                message("The cell is not able to be flagged, it's discovered or already flagged").
+                errorCode(e.getErrorCode()).
+                build();
     }
 
     @ExceptionHandler(value = CellNotUnflaggableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public Map<String, String> handleCellNotUnflaggableException(CellNotUnflaggableException e) {
-        HashMap<String, String> response = new HashMap<>();
-        response.put("message", "The cell is not able to be unflagged, it's discovered or not yet flagged");
-        return response;
+    public ErrorResponse handleCellNotUnflaggableException(CellNotUnflaggableException e) {
+        return ErrorResponse.builder().
+                message("The cell is not able to be unflagged, it's discovered or not yet flagged").
+                errorCode(e.getErrorCode()).
+                build();
     }
 
 }
