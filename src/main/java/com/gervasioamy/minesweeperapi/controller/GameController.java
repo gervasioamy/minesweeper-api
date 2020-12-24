@@ -34,6 +34,7 @@ public class GameController {
             "cells, mines a negative number, player null or empty, rows or cols are less than 3") })
     @PostMapping(value = "/games", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
     public GameResponse createNewGame(@RequestBody NewGameRequest request) {
         Game newGame = gameService.newGame(request.getPlayer(), request.getMines(), request.getRows(), request.getCols());
         log.info("New game just created for player {} \n {}", request.getPlayer(), newGame);
@@ -65,24 +66,22 @@ public class GameController {
 
     @Operation(summary = "Flag a cell. It ensures this cell can't be discovered (by mistake maybe?)")
     @ApiResponses(value = { @ApiResponse(responseCode = "404", description = "GameID not found"),
-            @ApiResponse(responseCode = "400", description = "Invalid row, col"),
+            @ApiResponse(responseCode = "400", description = "Invalid row, col or invalid game status"),
             @ApiResponse(responseCode = "400", description = "Invalid game status (other than CREATED or STARTED")})
     @PostMapping(value = "/games/{id}/flag", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public GameResponse flagCell(@PathVariable("id") String gameId, @RequestBody CellRequest request) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void flagCell(@PathVariable("id") String gameId, @RequestBody CellRequest request) {
         gameService.flagCell(gameId, request.getRow(), request.getCol());
-        return this.getGame(gameId);
     }
 
     @Operation(summary = "Unflag a cell. It left the given cell ready to be discovered")
     @ApiResponses(value = { @ApiResponse(responseCode = "404", description = "GameID not found"),
-            @ApiResponse(responseCode = "400", description = "Invalid row, col"),
+            @ApiResponse(responseCode = "400", description = "Invalid row, col or invalid game status"),
             @ApiResponse(responseCode = "400", description = "Invalid game status (other than CREATED or STARTED")})
     @DeleteMapping(value = "/games/{id}/flag", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public GameResponse unflagCell(@PathVariable("id") String gameId, @RequestBody CellRequest request) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void unflagCell(@PathVariable("id") String gameId, @RequestBody CellRequest request) {
         gameService.unflagCell(gameId, request.getRow(), request.getCol());
-        return this.getGame(gameId);
     }
 
     @Operation(summary = "Pause a game.")
