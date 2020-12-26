@@ -31,6 +31,9 @@ The following environment variables can be set to change some parameters:
 ## API Documentation
 You can find API endpoints documented in `{host}:{port}/api-docs.html`, where `host` and `port` values are related to where this app is running, in the case of runing it locally, try `http://localhost:8080/api-docs.html` 
 
+Or you can also find it at https://gamy-minesweeper-api.herokuapp.com/api-docs.html
+
+
 ## Implementation details
 Stack used:
 - Java 11
@@ -50,3 +53,31 @@ The error handling is implemented by throwing `RuntimeExeptions` handled by `Mai
  `@ControllerAdvice` that catched all uncaught exceptions before building the HTTP response. That way it's possible to
  centralize where the edge cases are handled taking advantage of SpringMVC features for converting exceptions into 
  HTTP Responses.
+ 
+ 
+## Public deploy
+The application is deployed on [Heroku](www.heroku.com) and the MongoDB is deployed in [mongo cloud](https://cloud.mongodb.com/)
+
+The API is accessible at https://gamy-minesweeper-api.herokuapp.com/ for example:
+```
+curl --request POST 'https://gamy-minesweeper-api.herokuapp.com/api/games/' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "cols": 6,
+    "rows": 6,
+    "mines": 8,
+    "player": "JohnDoe"
+}'
+```
+
+```
+curl --request POST 'https://gamy-minesweeper-api.herokuapp.com/api/games/396800ef-be2a-4704-b428-113b61e06dc5/discover/' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "row": 3,
+    "col": 3
+}'
+```
+
+Or else, you can play with swagger docs and execute the endpoints from there at 
+https://gamy-minesweeper-api.herokuapp.com/api-docs.html
