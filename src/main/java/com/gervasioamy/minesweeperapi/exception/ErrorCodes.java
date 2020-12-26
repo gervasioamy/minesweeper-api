@@ -16,4 +16,6 @@ public interface ErrorCodes {
 
     int ERROR_1006_INVALID_CELL =  1006;
 
+    int ERROR_1007_PLAYER_NOT_FOUND =  1007;
+
 }

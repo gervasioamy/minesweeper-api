@@ -6,6 +6,7 @@ import com.gervasioamy.minesweeperapi.controller.dto.GameResponse;
 import com.gervasioamy.minesweeperapi.controller.dto.NewGameRequest;
 import com.gervasioamy.minesweeperapi.model.Cell;
 import com.gervasioamy.minesweeperapi.model.Game;
+import com.gervasioamy.minesweeperapi.model.PlayerStats;
 import com.gervasioamy.minesweeperapi.service.GameService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -101,5 +102,13 @@ public class GameController {
     public GameResponse resume(@PathVariable("id") String gameId) {
         gameService.resume(gameId);
         return this.getGame(gameId);
+    }
+
+    @Operation(summary = "Get player stats. Games won, lost and abandoned count")
+    @ApiResponses(value = { @ApiResponse(responseCode = "404", description = "Player not found")})
+    @GetMapping(value = "/players/{id}/stats", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public PlayerStats getPlayerStats(@PathVariable("id") String gameId) {
+        return gameService.getPlayerStats(gameId);
     }
 }

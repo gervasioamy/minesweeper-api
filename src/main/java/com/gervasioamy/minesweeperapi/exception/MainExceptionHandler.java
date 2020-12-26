@@ -27,6 +27,16 @@ public class MainExceptionHandler {
                 build();
     }
 
+    @ExceptionHandler(value = PlayerNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorResponse handleGameNotFound(PlayerNotFoundException e) {
+        return ErrorResponse.builder().
+                message("Player: " + e.getPlayer() + " was not found").
+                errorCode(e.getErrorCode()).
+                build();
+    }
+
     @ExceptionHandler(value = GameInitException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody

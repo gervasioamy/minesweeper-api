@@ -3,6 +3,7 @@ package com.gervasioamy.minesweeperapi.service;
 import com.gervasioamy.minesweeperapi.exception.CellAlreadyDiscoveredException;
 import com.gervasioamy.minesweeperapi.model.Cell;
 import com.gervasioamy.minesweeperapi.model.Game;
+import com.gervasioamy.minesweeperapi.model.PlayerStats;
 
 import java.util.List;
 
@@ -73,4 +74,11 @@ public interface GameService {
      */
     void resume(String gameId);
 
+    /**
+     * Calculates how many won, lost and abandoned games the user has
+     * @param player the player
+     * @return a {@link PlayerStats} instance with all the data
+     * @
+     */
+    PlayerStats getPlayerStats(String player);
 }
