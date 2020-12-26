@@ -9,9 +9,7 @@ services:
   api:
     image: minesweeper-api:latest
     environment:
-      - MONGODB_HOST=api-database
-      - MONGODB_PORT=27017
-      - MONGODB_DBNAME=minesweeperDB
+      - MONGODB_URI=mongodb://api-database:27017/minesweeperDB
     ports:
       - 8080:8080
     links:
