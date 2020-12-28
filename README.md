@@ -22,11 +22,9 @@ docker-compose up
 
 ### Config options
 The following environment variables can be set to change some parameters:
-- `MONGODB_HOST`: the host where MongoDB is running
-- `MONGODB_PORT`: the port where MongoDB is running
-- `MONGODB_USER`: the username to connect to MongoDB 
+- `MONGODB_URI`: the MongoDB connection string. It should be formatted as: `mongodb://[username:password@]host1[:port1][,...hostN[:portN]][/[defaultauthdb][?options]]`. For more details go to [mongo reference](https://docs.mongodb.com/manual/reference/connection-string/)
 
-(see ./docker-compose.yml as an example of using those en vars)
+(see ./docker-compose.yml as an example of using that en var)
 
 ## API Documentation
 You can find API endpoints documented in `{host}:{port}/api-docs.html`, where `host` and `port` values are related to where this app is running, in the case of runing it locally, try `http://localhost:8080/api-docs.html` 
